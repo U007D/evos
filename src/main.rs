@@ -1,13 +1,29 @@
-#![cfg_attr(not(test), no_std)]
-#![cfg_attr(not(test), no_main)]
+#![no_std]
+#![no_main]
+#![feature(never_type)]
 
-mod handler;
+// TODO: Remove this in favor of `cortex_m_rt`'s panic handler?
 
-// `#[no_mangle]` is unsafe but is required to be able to call application entry point
-#[allow(unsafe_code)]
-#[cfg_attr(not(test), no_mangle)]
-#[allow(clippy::missing_const_for_fn)]
-extern "C" fn main() -> ! {
-    #[allow(clippy::empty_loop)]
-    loop {}
+use cortex_m_rt;
+use defmt_rtt as _;
+use embassy_executor::Spawner;
+use embassy_rp::config::Config;
+use embassy_rp::gpio::Pin;
+use embassy_time::{Duration, Timer};
+use panic_probe as _;
+
+use lib::error::Result;
+
+#[embassy_executor::main]
+async fn main(spawner: Spawner) -> ! {
+    let err = inner_main(spawner).await.unwrap_err();
+    panic!("{err}");
+}
+
+async fn inner_main(spawner: Spawner) -> Result<!> {
+    let _periphs: embassy_rp::Peripherals = embassy_rp::init(Config::default());
+
+    loop {
+        Timer::after(Duration::from_millis(1000)).await;
+    }
 }
