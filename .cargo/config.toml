@@ -3,10 +3,11 @@ test_host = "test --target=aarch64-apple-darwin"
 
 [build]
 rustc-wrapper = "/Users/sergibli/.cargo/bin/clippy-driver"
-target = "aarch64-unknown-none"
+target = "thumbv6m-none-eabi"
 
 [env]
 CLIPPY_TESTS = "true"
+DEFMT_LOG = "debug"
 
 [net]
 git-fetch-with-cli = true
@@ -14,3 +15,11 @@ git-fetch-with-cli = true
 [target.riscv64gc-unknown-none-elf]
 runner = "aarch64-unknown-none-gdb"
 rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+runner = "probe-rs run --chip=RP2040"
+rustflags = [
+    "-C", "link-arg=-Tmemory.x",
+    # Supplied by `defmt` crate
+    "-C", "link-arg=-Tdefmt.x"
+]

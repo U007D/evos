@@ -6,7 +6,12 @@ edition = "2021"
 
 [dependencies]
 bool_ext = { version = "0.7.0", default-features = false }
-derive_more = {  version = "1.0.0", default-features = false }
+cortex-m-rt = "0.7.5"
+cortex-m = "0.7.7"
+defmt = "0.3.8"
+defmt-rtt = "0.4.1"
+derive_more = { version = "1.0.0", default-features = false, features = ["debug", "display", "error", "from"] }
+panic-probe = { version = "0.3.2", features = ["print-defmt"] }
 
 [profile.dev]
 codegen-units = 1
