@@ -2,7 +2,6 @@
 test_host = "test --target=aarch64-apple-darwin"
 
 [build]
-rustc-wrapper = "/Users/sergibli/.cargo/bin/clippy-driver"
 target = "thumbv6m-none-eabi"
 
 [env]
