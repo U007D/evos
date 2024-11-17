@@ -9,8 +9,11 @@
 
 use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_rp::config::Config;
-use embassy_time::{Duration, Timer};
+use embassy_rp::{adc::{Adc, Channel, Config as AdcConfig, InterruptHandler},
+                 bind_interrupts,
+                 config::Config as PeriphsConfig,
+                 gpio::Pull};
+use embassy_time::Timer;
 use lib::error::Result;
 use panic_probe as _;
 
@@ -21,9 +24,18 @@ async fn main(spawner: Spawner) -> ! {
 }
 
 async fn inner_main(_spawner: Spawner) -> Result<!> {
-    let _periphs: embassy_rp::Peripherals = embassy_rp::init(Config::default());
+    bind_interrupts!(struct Irqs {
+        ADC_IRQ_FIFO => InterruptHandler;
+    });
+
+    let periphs: embassy_rp::Peripherals = embassy_rp::init(PeriphsConfig::default());
+    let mut adc = Adc::new(periphs.ADC, Irqs, AdcConfig::default());
+
+    let mut accelerator = Channel::new_pin(periphs.PIN_28, Pull::None);
 
     loop {
-        Timer::after(Duration::from_millis(1000)).await;
+        let level = adc.read(&mut accelerator).await?;
+        defmt::println!("Pin 28 level = {}", level);
+        Timer::after_millis(250).await;
     }
 }
