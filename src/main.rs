@@ -1,18 +1,18 @@
 #![no_std]
 #![no_main]
 #![feature(never_type)]
+#![allow(
+    clippy::future_not_send,
+    reason = "Suppress false-positives; 'future cannot be sent between threads safely' is not \
+              relevant in bare-metal environment."
+)]
 
-// TODO: Remove this in favor of `cortex_m_rt`'s panic handler?
-
-use cortex_m_rt;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_rp::config::Config;
-use embassy_rp::gpio::Pin;
 use embassy_time::{Duration, Timer};
-use panic_probe as _;
-
 use lib::error::Result;
+use panic_probe as _;
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) -> ! {
@@ -20,7 +20,7 @@ async fn main(spawner: Spawner) -> ! {
     panic!("{err}");
 }
 
-async fn inner_main(spawner: Spawner) -> Result<!> {
+async fn inner_main(_spawner: Spawner) -> Result<!> {
     let _periphs: embassy_rp::Peripherals = embassy_rp::init(Config::default());
 
     loop {
