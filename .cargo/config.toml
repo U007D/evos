@@ -1,0 +1,16 @@
+[alias]
+test_host = "test --target=aarch64-apple-darwin"
+
+[build]
+rustc-wrapper = "/Users/sergibli/.cargo/bin/clippy-driver"
+target = "aarch64-unknown-none"
+
+[env]
+CLIPPY_TESTS = "true"
+
+[net]
+git-fetch-with-cli = true
+
+[target.riscv64gc-unknown-none-elf]
+runner = "aarch64-unknown-none-gdb"
+rustflags = ["-C", "link-arg=-Tlink.x"]
