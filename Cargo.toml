@@ -14,7 +14,7 @@ cortex-m-rt = "0.7.5"
 cortex-m = "0.7.7"
 defmt = "0.3.8"
 defmt-rtt = "0.4.1"
-derive_more = { version = "1.0.0", default-features = false, features = ["debug", "display", "error", "from"] }
+derive_more = { version = "1.0.0", default-features = false, features = ["full"] }
 embassy-executor = { version = "0.6.1", features = [
     "arch-cortex-m",
     "executor-thread",
@@ -81,6 +81,8 @@ rust_2018_idioms = { level = "warn", priority = -1 }
 
 [lints.clippy]
 # Safety-critical application lints
+enum_glob_use = "forbid"
+
 arithmetic_side_effects = "deny"
 float_cmp_const = "deny"
 indexing_slicing = "deny"
@@ -103,5 +105,5 @@ missing_errors_doc = "allow"
 module_name_repetitions = "allow"
 obfuscated_if_else = "allow"
 similar_names = "allow"
+too_long_first_doc_paragraph = "allow"
 unnecessary_wraps = "allow"
-enum_glob_use = "deny"
